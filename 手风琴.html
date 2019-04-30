@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+	ul{list-style:none;}
+	*{margin:0;padding:0;}
+	div{
+	    width:1300px;
+	    height:670px;
+	    margin:50px auto;
+	    border:1px solid red;
+	    overflow:hidden;
+	}
+	div li{
+	    width:260px;
+	    height:670px;
+	    float:left;
+	}
+	div ul{
+	    width:1300px;
+	}
+    </style>
+</head>
+<body>
+<div>
+    <ul>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+    </ul>
+</div>
+</body>
+</html>
+<script>
+	var box = document.getElementsByTagName("div")[0];
+    var lis = box.children[0].children;
+    for(var i=0;i<lis.length;i++)
+    {
+		lis[i].style.backgroundImage = "url(./"+(i+1)+".jpg)";	//引入图片至li
+		lis[i].onmouseover = function(){	//当鼠标经过其中一个图片时
+	    	for(var i=0;i<lis.length;i++)
+	    	{
+				animate(lis[i],{width:75});	//所有图片宽度为75px
+	    	}
+	    	animate(this,{width:1000});	//这个图片宽度为1000px
+		}
+		lis[i].onmouseout = function(){
+	    	animate(lis[i],{width:260});
+		}
+    }
+	function animate(obj, json) {
+    	clearInterval(obj.timer);	//先清除定时器
+    	obj.timer = setInterval(function () {
+        	var flag = true;
+        	for (var k in json) {	//遍历json
+            	var leader = parseInt(getStyle(obj, k)) || 0;	//初始
+            	var target = json[k];	//目标
+            	var step = (target - leader) / 10;	//每一步走剩下的1/10，缓动动画
+            	step = step > 0 ? Math.ceil(step) : Math.floor(step);	//当步程大于0时向上取整，步程小于0时向下取整
+            	leader = leader + step;	//新的初值
+            	obj.style[k] = leader + "px";
+            	if (leader != target) {
+                flag = false;//标志还未到达指定位置
+            }
+        }
+        //如果此时仍然为true 就说明真的都到达了
+        if (flag) {
+            clearInterval(obj.timer);
+        }
+    }, 15);
+}
+//全部属性都到达目标值才能清空
+function getStyle(obj, attr) {
+    if (window.getComputedStyle) {
+        return window.getComputedStyle(obj, null)[attr];
+    } else {
+        return obj.currentStyle[attr];
+    }
+}
+</script>
